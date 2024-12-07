@@ -24,7 +24,7 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-        const result = await dbRun("INSERT INTO users (firstName, lastName, email, username, password, DateOfBirth) VALUES (?, ?);", [req.body.firstName, req.body.lastName, req.body.email, req.body.username, req.body.password, req.body.DateOfBirth]);
+        const result = await dbRun("INSERT INTO users (firstName, lastName, email, username, password, DateOfBirth) VALUES (?, ?, ?, ?, ?, ?);", [req.body.firstName, req.body.lastName, req.body.email, req.body.username, req.body.password, req.body.DateOfBirth]);
         res.status(201).json({ id: result.lastID, ...req.body });
     } catch (err) {
         next(err);
@@ -36,7 +36,7 @@ router.put("/:id", async (req, res, next) => {
         const [user] = await dbQuery("SELECT * FROM users WHERE id = ?;", [req.params.id]);
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        await dbRun("UPDATE users SET name = ?, email = ? WHERE id = ?;", [ req.body.firstName || user.firstName, req.body.lastName || user.lastName, req.body.email || user.email, req.body.username || user.username, req.body.password || user.password, req.body.DateOfBirth || user.DateOfBirth, req.params.id]);
+        await dbRun("UPDATE users SET firstName = ?, lastName=?, email = ?, username = ?, password = ?, DateOfBirth = ? WHERE id = ?;", [ req.body.firstName || user.firstName, req.body.lastName || user.lastName, req.body.email || user.email, req.body.username || user.username, req.body.password || user.password, req.body.DateOfBirth || user.DateOfBirth, req.params.id]);
         res.status(200).json({ id: req.params.id, ...req.body });
     } catch (err) {
         next(err);
